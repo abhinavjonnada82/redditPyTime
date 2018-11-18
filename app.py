@@ -104,6 +104,12 @@ class DashBoard(DashBase):
     def chartsTime(self, x1List, y1List, xList, yList, x2List, y2List):
         graphy = dash.Dash()
         graphy.layout = html.Div([
+            html.H1(
+                children='Reddit Submissions (x-axis) v. Top Score & No. of Comments(y-axis)',
+                style={
+                    'textAlign': 'center',
+                }
+            ),
             html.Div(
                 className="row",
                 children=[
@@ -111,20 +117,22 @@ class DashBoard(DashBase):
                         className="six columns",
                         children=[
                             html.Div(
-                                children=dcc.Graph(
+                                dcc.Graph(
                                     id='right-graph',
                                     figure={
                                         'data': [{
                                             'x': x1List,
                                             'y': y1List,
                                             'type': 'scatter',
+                                            'name': 'Submissions v. Number of Comments'
                                         }],
                                         'layout': {
                                             'height': 800,
-                                            'line':{'width': 1, 'color': 'red' },
-
-
-                                        }
+                                        },
+                                        'marker': {
+                                             'size': 15,
+                                             'line': {'width': 0.5, 'color': 'red'}
+                                        },
                                     }
                                 )
                             )
