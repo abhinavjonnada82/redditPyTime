@@ -2,7 +2,7 @@
  
 redditPyTime
 
-
+Using HTTP post requests, retrives uses name and karma points
 Using PRAW, scrapes top 10 Reddit Submission based on users subReddit entry.
 Gets submissions along with top upvotes and number of comments. 
 Later on sorts top upvotes using python built in sort command.
@@ -13,11 +13,14 @@ git clone repository
 
 run -> python3 app.py 
 Dashboard:
-![redditdb](https://user-images.githubusercontent.com/30497847/48669007-c20bb380-eabf-11e8-8cda-4a3f9754ecbe.PNG)
+![screenshot_2018-11-18 dash](https://user-images.githubusercontent.com/30497847/48669141-9ee30300-eac3-11e8-85ff-32f2e3f57def.png)
+
 
 </strong>
-
-
+Sample Output:
+Username KingNAV82
+comment_karma: -3
+link_karma: 1
 Sample Input:
 What do you like to search?
 gifs
