@@ -8,11 +8,11 @@ import smtplib
 from abc import ABC, abstractmethod
 
 
-reddit = praw.Reddit(client_id="jGPKzTuBE-Z95w",
-                     client_secret="ml-vWi1dPEGd8NUtO70J_9yYFdY",
-                     user_agent= "bot /u/kingNAV82",
-                     username="kingNAV82",
-                     password="apple123")
+reddit = praw.Reddit(client_id="=",
+                     client_secret="",
+                     user_agent= "",
+                     username="",
+                     password="")
 
 listScore = {}
 commentScore = {}
