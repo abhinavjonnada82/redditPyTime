@@ -13,7 +13,7 @@ reddit = praw.Reddit(client_id="jGPKzTuBE-Z95w",
                      user_agent= "bot /u/kingNAV82",
                      username="kingNAV82",
                      password="apple123")
-file = open("data.txt", "w")
+
 listScore = {}
 commentScore = {}
 xList = []
@@ -29,6 +29,7 @@ class RedditBase():
 
      #helper function
     def writeIntoFile(self, holderToWrite):
+        file = open("data.txt", "a")
         lineDivider = ('------------------------')
         file.write(holderToWrite)
         file.write(lineDivider)
@@ -63,7 +64,7 @@ class RedditBase():
         print("\n")
         od = collections.OrderedDict(sorted(listScore.items()))
         print("After Sorting : ")
-        file.write("After Sorting : ")
+        self.writeIntoFile("After Sorting : ")
         for k, v in od.items():
             contentHolder = ('\n{} : {}\n'.format(k, v))
             self.writeIntoFile(contentHolder)
@@ -96,25 +97,21 @@ class DashBAndEmail(ABC):
     def callForEmail(self):
         raise NotImplementedError("Subclass must implement this abstract method")
 
-    @abstractmethod
-    def callForDashBoard(self):
-        raise NotImplementedError("Subclass must implement this abstract method")
 
 class EmailTime(DashBAndEmail):
     def __init__(self, f):
         super().__init__(f)
 
     def callForEmail(self):
-        f = open("data.txt", "r", encoding="utf-8")
-        contents = f.read()
+        # f = open("data.txt", "r", encoding="utf-8")
+        # contents = f.read()
         MY_ADDRESS = "mail.expenseTracker@gmail.com"
         PASSWORD = "test123*"
         email = input("Please enter your email address!\n")
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
         server.login(MY_ADDRESS, PASSWORD)
-
-        msg = "Your reddit query...\n" + contents + "\nThank you!!\n"
+        msg = "Your reddit query...\n"  + "\nThank you!!\n"
         server.sendmail(MY_ADDRESS, email, msg)
         server.quit()
         print("Email sent!! Please check your email address!!")
