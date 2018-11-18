@@ -4,9 +4,10 @@ redditPyTime
 
 
 Using PRAW, scrapes top 10 Reddit Submission based on users subReddit entry.
-Scarpes for top upvotes and number of comments. 
-Later on sorts top upvotes using python built in sort command
-At end, gives you a dashboard with Submissions v. Top Score and Submission v. Comments
+Gets submissions along with top upvotes and number of comments. 
+Later on sorts top upvotes using python built in sort command.
+At end, gives you a dashboard with Bar graph -> Submissions v. Top Score (sorted and unsorted) and 
+Scatter graph -> Submission v. Comments
 
 git clone repository
 
