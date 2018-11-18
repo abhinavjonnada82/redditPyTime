@@ -1,4 +1,5 @@
-
+import requests
+import requests.auth
 import praw
 import collections
 import dash
@@ -6,6 +7,19 @@ import dash_core_components as dcc
 import dash_html_components as html
 import smtplib
 from abc import ABC, abstractmethod
+
+client_auth = requests.auth.HTTPBasicAuth('', '')
+post_data = {"grant_type": "", "username": "", "password": ""}
+headers = {"Authorization": "bearer ", "User-Agent": ""}
+response = requests.get("https://oauth.reddit.com/api/v1/me", headers=headers)
+jsonHolder = response.json()
+print("Username "+ jsonHolder["name"])
+print("comment_karma: ")
+print(jsonHolder["comment_karma"])
+print("link_karma: ")
+print(jsonHolder["link_karma"])
+
+
 
 
 reddit = praw.Reddit(client_id="jGPKzTuBE-Z95w",
@@ -29,7 +43,7 @@ class RedditBase():
 
      #helper function
     def writeIntoFile(self, holderToWrite):
-        file = open("data.txt", "a")
+        file = open("data.txt", "w")
         lineDivider = ('------------------------')
         file.write(holderToWrite)
         file.write(lineDivider)
@@ -245,10 +259,10 @@ if __name__ == "__main__":
 
 #
 #
-# #implement a queue
-# # submission = reddit.submission(id='9xxsqd')
-# # print(submission.url)
-# # submission.comments.replace_more(limit=0)
-# # for top_level_comment in submission.comments:
-# #     print(top_level_comment.body)
-#
+# # #implement a queue
+# # # submission = reddit.submission(id='9xxsqd')
+# # # print(submission.url)
+# # # submission.comments.replace_more(limit=0)
+# # # for top_level_comment in submission.comments:
+# # #     print(top_level_comment.body)
+# #
