@@ -12,6 +12,8 @@ git clone repository
 
 run -> python3 app.py 
 Dashboard:
+![redditdb](https://user-images.githubusercontent.com/30497847/48669007-c20bb380-eabf-11e8-8cda-4a3f9754ecbe.PNG)
+
 </strong>
 
 
