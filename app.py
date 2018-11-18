@@ -89,44 +89,124 @@ class RedditBase():
         print(x1List)
         print(y1List)
 
-class DashBAndEmail(ABC):
-    def __init__(self, par):
-        self.par = par
+graphy = dash.Dash()
+graphy.layout = html.Div([
+    html.Div(
+        className="row",
+        children=[
+            html.Div(
+                className="six columns",
+                children=[
+                    html.Div(
+                        children=dcc.Graph(
+                            id='right-graph',
+                            figure={
+                                'data': [{
+                                    'x': x1List,
+                                    'y': y1List,
+                                    'type': 'scatter',
+                                }],
+                                'layout': {
+                                    'height': 800,
+                                    'line':{'width': 1, 'color': 'red' },
 
-    @abstractmethod
-    def callForEmail(self):
-        raise NotImplementedError("Subclass must implement this abstract method")
+
+                                }
+                            }
+                        )
+                    )
+                ]
+            ),
+            html.Div(
+                className="six columns",
+                children=html.Div([
+                    dcc.Graph(
+                        id='right-top-graph',
+                        figure={
+                            'data': [{
+                                'x': y2List,
+                                'y': x2List,
+                                'type': 'bar',
+                                'name': 'Score v. Submissions'
+
+                            }],
+                            'layout': {
+                                'height': 400,
+                                'margin': {'l': 40, 'b': 40, 't': 10, 'r': 10},
+                                'legend':{'x': 0, 'y': 1},
+                                'hovermode':'closest'
 
 
-class EmailTime(DashBAndEmail):
-    def __init__(self, f):
-        super().__init__(f)
+                            }
+                        }
+                    ),
+                    dcc.Graph(
+                        id='right-bottom-graph',
+                        figure={
+                            'data': [{
+                                'x': yList,
+                                'y': xList,
+                                'type': 'bar'
+                            }],
+                            'layout': {
+                                'height': 400,
+                                'margin': {'l': 40, 'b': 40, 't': 10, 'r': 10},
+                                'legend':{'x': 0, 'y': 1},
+                                'hovermode':'closest'
+                            }
+                        }
+                    ),
 
-    def callForEmail(self):
-        # f = open("data.txt", "r", encoding="utf-8")
-        # contents = f.read()
-        MY_ADDRESS = "mail.expenseTracker@gmail.com"
-        PASSWORD = "test123*"
-        email = input("Please enter your email address!\n")
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        server.login(MY_ADDRESS, PASSWORD)
-        msg = "Your reddit query...\n"  + "\nThank you!!\n"
-        server.sendmail(MY_ADDRESS, email, msg)
-        server.quit()
-        print("Email sent!! Please check your email address!!")
+                ])
+            )
+        ]
+    )
+])
+
+graphy.css.append_css({
+    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
+})
+#
+
+# class DashBAndEmail(ABC):
+#     def __init__(self, par):
+#         self.par = par
+#
+#     @abstractmethod
+#     def callForEmail(self):
+#         raise NotImplementedError("Subclass must implement this abstract method")
+#
+#
+# class EmailTime(DashBAndEmail):
+#     def __init__(self, f):
+#         super().__init__(f)
+#
+#     def callForEmail(self):
+#         # f = open("data.txt", "r", encoding="utf-8")
+#         # contents = f.read()
+#         MY_ADDRESS = "mail.expenseTracker@gmail.com"
+#         PASSWORD = "test123*"
+#         email = input("Please enter your email address!\n")
+#         server = smtplib.SMTP('smtp.gmail.com', 587)
+#         server.starttls()
+#         server.login(MY_ADDRESS, PASSWORD)
+#         msg = "Your reddit query...\n"  + "\nThank you!!\n"
+#         server.sendmail(MY_ADDRESS, email, msg)
+#         server.quit()
+#         print("Email sent!! Please check your email address!!")
 
 
 
 if __name__ == "__main__":
     redditStart = RedditBase("redditStart")
     redditStart.startReddit()
-    responseEmail = input("Do you want an email? y or n")
-    if (responseEmail == "y" or "Y"):
-        email = EmailTime("email")
-        email.callForEmail()
-    else:
-        print("Yes")
+    graphy.run_server(debug=True)
+    # responseEmail = input("Do you want an email? y or n")
+    # if (responseEmail == "y" or "Y"):
+    #     email = EmailTime("email")
+    #     email.callForEmail()
+    # else:
+    #     print("Yes")
 
 
 
@@ -147,14 +227,3 @@ if __name__ == "__main__":
 # # for top_level_comment in submission.comments:
 # #     print(top_level_comment.body)
 #
-#
-#
-#
-#
-#
-#
-#
-
-
-# if __name__ == '__main__':
-#     graphy.run_server(debug=True)
