@@ -5,6 +5,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import smtplib
+from abc import ABC, abstractmethod
 
 
 reddit = praw.Reddit(client_id="jGPKzTuBE-Z95w",
@@ -22,88 +23,116 @@ y2List = []
 x1List = []
 y1List = []
 
+class RedditBase():
+    def __init__(self, para):
+     self.para = para
 
-def writeIntoFile(holderToWrite):
-    lineDivider = ('------------------------')
-    file.write(holderToWrite)
-    file.write(lineDivider)
+     #helper function
+    def writeIntoFile(self, holderToWrite):
+        lineDivider = ('------------------------')
+        file.write(holderToWrite)
+        file.write(lineDivider)
 
-def startReddit():
-    subRedditSearch = input ("What do you wanna search for ?")
-    subreddit = reddit.subreddit(subRedditSearch)
-    print(subreddit.display_name)
-    print(subreddit.title)
-    writeIntoFile(subreddit.title)
-    print(subreddit.description)
-    writeIntoFile(subreddit.description)
-    for submission in subreddit.hot(limit=10):
-        listScore[submission.score] = submission.title
-        commentScore[submission.title] = submission.num_comments
+    def startReddit(self):
+        subRedditSearch = input ("What do you wanna search for ?")
+        subreddit = reddit.subreddit(subRedditSearch)
+        print(subreddit.display_name)
+        print(subreddit.title)
+        self.writeIntoFile(subreddit.title)
+        print(subreddit.description)
+        self.writeIntoFile(subreddit.description)
+        self.redditFiller(subreddit)
 
-def graphCreator(listScore):
-    print("Before Sorting : ")
-    writeIntoFile("Before Sorting : ")
-    for k, v in listScore.items():
-        print (k, v)
-        x2List.append(k)
-        y2List.append(v)
-        contentHolder = ('\n{} : {}\n'.format(k, v))
-        writeIntoFile(contentHolder)
-    print("\n")
-    od = collections.OrderedDict(sorted(listScore.items()))
-    print("After Sorting : ")
-    file.write("After Sorting : ")
-    for k, v in od.items():
-        contentHolder = ('\n{} : {}\n'.format(k, v))
-        writeIntoFile(contentHolder)
-        print (k, v)
-        xList.append(k)
-        yList.append(v)
+    def redditFiller(self, subreddit):
+        for submission in subreddit.hot(limit=10):
+            listScore[submission.score] = submission.title
+            commentScore[submission.title] = submission.num_comments
 
-    print(xList)
-    print(yList)
+        self.graphCreator(listScore)
+        self.graphCreator1(commentScore)
 
-def graphCreator1(commentScore):
+    def graphCreator(self, listScore):
+        print("Before Sorting : ")
+        self.writeIntoFile("Before Sorting : ")
+        for k, v in listScore.items():
+            print (k, v)
+            x2List.append(k)
+            y2List.append(v)
+            contentHolder = ('\n{} : {}\n'.format(k, v))
+            self.writeIntoFile(contentHolder)
+        print("\n")
+        od = collections.OrderedDict(sorted(listScore.items()))
+        print("After Sorting : ")
+        file.write("After Sorting : ")
+        for k, v in od.items():
+            contentHolder = ('\n{} : {}\n'.format(k, v))
+            self.writeIntoFile(contentHolder)
+            print (k, v)
+            xList.append(k)
+            yList.append(v)
 
-    print("Comments Section: ")
-    writeIntoFile("Comments Section: ")
-    for k, v in commentScore.items():
-        print (k, v)
-        x1List.append(k)
-        y1List.append(v)
-        contentHolder = ('\n{} : {}\n'.format(k, v))
-        writeIntoFile(contentHolder)
-
-    print(x1List)
-    print(y1List)
-
-#
-#
-
-def callForEmail():
-    f = open("data.txt", "r", encoding="utf-8")
-    contents = f.read()
-    MY_ADDRESS = "mail.expenseTracker@gmail.com"
-    PASSWORD = "test123*"
-    email = input("Please enter your email address!\n")
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login(MY_ADDRESS, PASSWORD)
-
-    msg = "Your reddit query...\n" + contents + "\nThank you!!\n"
-    server.sendmail(MY_ADDRESS, email, msg)
-    server.quit()
-    print("Email sent!! Please check your email address!!")
+        print(xList)
+        print(yList)
 
 
-#
+    def graphCreator1(self, commentScore):
+        print("Comments Section: ")
+        self.writeIntoFile("Comments Section: ")
+        for k, v in commentScore.items():
+            print (k, v)
+            x1List.append(k)
+            y1List.append(v)
+            contentHolder = ('\n{} : {}\n'.format(k, v))
+            self.writeIntoFile(contentHolder)
 
-#
-#
-startReddit()
-graphCreator(listScore)
-graphCreator1(commentScore)
-# callForEmail()
+        print(x1List)
+        print(y1List)
+
+class DashBAndEmail(ABC):
+    def __init__(self, par):
+        self.par = par
+
+    @abstractmethod
+    def callForEmail(self):
+        raise NotImplementedError("Subclass must implement this abstract method")
+
+    @abstractmethod
+    def callForDashBoard(self):
+        raise NotImplementedError("Subclass must implement this abstract method")
+
+class EmailTime(DashBAndEmail):
+    def __init__(self, f):
+        super().__init__(f)
+
+    def callForEmail(self):
+        f = open("data.txt", "r", encoding="utf-8")
+        contents = f.read()
+        MY_ADDRESS = "mail.expenseTracker@gmail.com"
+        PASSWORD = "test123*"
+        email = input("Please enter your email address!\n")
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(MY_ADDRESS, PASSWORD)
+
+        msg = "Your reddit query...\n" + contents + "\nThank you!!\n"
+        server.sendmail(MY_ADDRESS, email, msg)
+        server.quit()
+        print("Email sent!! Please check your email address!!")
+
+
+
+if __name__ == "__main__":
+    redditStart = RedditBase("redditStart")
+    redditStart.startReddit()
+    responseEmail = input("Do you want an email? y or n")
+    if (responseEmail == "y" or "Y"):
+        email = EmailTime("email")
+        email.callForEmail()
+    else:
+        print("Yes")
+
+
+
 
 
 #
@@ -128,104 +157,7 @@ graphCreator1(commentScore)
 #
 #
 #
-# print ("Hello World")
-#
-#
-# # trace0 = go.Bar(
-# #     x=yList,
-# #     y=xList,
-# #     marker = dict(
-# #           color = 'blue'
-# #     ),
-# # )
-# #
-# # trace1 = go.Scatter(
-# #     x=x1List,
-# #     y=y1List,
-# # )
-# #
-# # data = [trace0, trace1]
-# #
-# # py.plot(data, filename = 'basic-line.html', auto_open=True)
-#
-#
-# graphy = dash.Dash()
-# graphy.layout = html.Div([
-#     html.Div(
-#         className="row",
-#         children=[
-#             html.Div(
-#                 className="six columns",
-#                 children=[
-#                     html.Div(
-#                         children=dcc.Graph(
-#                             id='right-graph',
-#                             figure={
-#                                 'data': [{
-#                                     'x': x1List,
-#                                     'y': y1List,
-#                                     'type': 'scatter',
-#                                 }],
-#                                 'layout': {
-#                                     'height': 800,
-#                                     'line':{'width': 1, 'color': 'red' },
-#
-#
-#                                 }
-#                             }
-#                         )
-#                     )
-#                 ]
-#             ),
-#             html.Div(
-#                 className="six columns",
-#                 children=html.Div([
-#                     dcc.Graph(
-#                         id='right-top-graph',
-#                         figure={
-#                             'data': [{
-#                                 'x': y2List,
-#                                 'y': x2List,
-#                                 'type': 'bar',
-#                                 'name': 'Score v. Submissions'
-#
-#                             }],
-#                             'layout': {
-#                                 'height': 400,
-#                                 'margin': {'l': 40, 'b': 40, 't': 10, 'r': 10},
-#                                 'legend':{'x': 0, 'y': 1},
-#                                 'hovermode':'closest'
-#
-#
-#                             }
-#                         }
-#                     ),
-#                     dcc.Graph(
-#                         id='right-bottom-graph',
-#                         figure={
-#                             'data': [{
-#                                 'x': yList,
-#                                 'y': xList,
-#                                 'type': 'bar'
-#                             }],
-#                             'layout': {
-#                                 'height': 400,
-#                                 'margin': {'l': 40, 'b': 40, 't': 10, 'r': 10},
-#                                 'legend':{'x': 0, 'y': 1},
-#                                 'hovermode':'closest'
-#                             }
-#                         }
-#                     ),
-#
-#                 ])
-#             )
-#         ]
-#     )
-# ])
-#
-# graphy.css.append_css({
-#     'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
-# })
-#
+
+
 # if __name__ == '__main__':
 #     graphy.run_server(debug=True)
