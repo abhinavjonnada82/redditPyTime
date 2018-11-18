@@ -89,84 +89,99 @@ class RedditBase():
         print(x1List)
         print(y1List)
 
-graphy = dash.Dash()
-graphy.layout = html.Div([
-    html.Div(
-        className="row",
-        children=[
+class DashBase(ABC):
+    def __init__(self, par):
+        self.par = par
+
+    @abstractmethod
+    def chartsTime(self, param1, param2, param3, param4, param5, param6):
+        raise NotImplementedError("Subclass must implement this abstract method")
+
+class DashBoard(DashBase):
+    def __init__(self, f):
+        super().__init__(f)
+
+    def chartsTime(self, x1List, y1List, xList, yList, x2List, y2List):
+        graphy = dash.Dash()
+        graphy.layout = html.Div([
             html.Div(
-                className="six columns",
+                className="row",
                 children=[
                     html.Div(
-                        children=dcc.Graph(
-                            id='right-graph',
-                            figure={
-                                'data': [{
-                                    'x': x1List,
-                                    'y': y1List,
-                                    'type': 'scatter',
-                                }],
-                                'layout': {
-                                    'height': 800,
-                                    'line':{'width': 1, 'color': 'red' },
+                        className="six columns",
+                        children=[
+                            html.Div(
+                                children=dcc.Graph(
+                                    id='right-graph',
+                                    figure={
+                                        'data': [{
+                                            'x': x1List,
+                                            'y': y1List,
+                                            'type': 'scatter',
+                                        }],
+                                        'layout': {
+                                            'height': 800,
+                                            'line':{'width': 1, 'color': 'red' },
 
 
+                                        }
+                                    }
+                                )
+                            )
+                        ]
+                    ),
+                    html.Div(
+                        className="six columns",
+                        children=html.Div([
+                            dcc.Graph(
+                                id='right-top-graph',
+                                figure={
+                                    'data': [{
+                                        'x': y2List,
+                                        'y': x2List,
+                                        'type': 'bar',
+                                        'name': 'Score v. Submissions'
+
+                                    }],
+                                    'layout': {
+                                        'height': 400,
+                                        'margin': {'l': 40, 'b': 40, 't': 10, 'r': 10},
+                                        'legend':{'x': 0, 'y': 1},
+                                        'hovermode':'closest'
+
+
+                                    }
                                 }
-                            }
-                        )
+                            ),
+                            dcc.Graph(
+                                id='right-bottom-graph',
+                                figure={
+                                    'data': [{
+                                        'x': yList,
+                                        'y': xList,
+                                        'type': 'bar'
+                                    }],
+                                    'layout': {
+                                        'height': 400,
+                                        'margin': {'l': 40, 'b': 40, 't': 10, 'r': 10},
+                                        'legend':{'x': 0, 'y': 1},
+                                        'hovermode':'closest'
+                                    }
+                                }
+                            ),
+
+                        ])
                     )
                 ]
-            ),
-            html.Div(
-                className="six columns",
-                children=html.Div([
-                    dcc.Graph(
-                        id='right-top-graph',
-                        figure={
-                            'data': [{
-                                'x': y2List,
-                                'y': x2List,
-                                'type': 'bar',
-                                'name': 'Score v. Submissions'
-
-                            }],
-                            'layout': {
-                                'height': 400,
-                                'margin': {'l': 40, 'b': 40, 't': 10, 'r': 10},
-                                'legend':{'x': 0, 'y': 1},
-                                'hovermode':'closest'
-
-
-                            }
-                        }
-                    ),
-                    dcc.Graph(
-                        id='right-bottom-graph',
-                        figure={
-                            'data': [{
-                                'x': yList,
-                                'y': xList,
-                                'type': 'bar'
-                            }],
-                            'layout': {
-                                'height': 400,
-                                'margin': {'l': 40, 'b': 40, 't': 10, 'r': 10},
-                                'legend':{'x': 0, 'y': 1},
-                                'hovermode':'closest'
-                            }
-                        }
-                    ),
-
-                ])
             )
-        ]
-    )
-])
+        ])
 
-graphy.css.append_css({
-    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
-})
-#
+        graphy.css.append_css({
+            'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
+        })
+
+        graphy.run_server(debug=True)
+    #
 
 # class DashBAndEmail(ABC):
 #     def __init__(self, par):
@@ -200,7 +215,9 @@ graphy.css.append_css({
 if __name__ == "__main__":
     redditStart = RedditBase("redditStart")
     redditStart.startReddit()
-    graphy.run_server(debug=True)
+    dashB = DashBoard("dashB")
+    dashB.chartsTime(x1List, y1List, xList, yList, x2List, y2List)
+
     # responseEmail = input("Do you want an email? y or n")
     # if (responseEmail == "y" or "Y"):
     #     email = EmailTime("email")
