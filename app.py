@@ -103,8 +103,8 @@ class EmailTime(DashBAndEmail):
         super().__init__(f)
 
     def callForEmail(self):
-        # f = open("data.txt", "r", encoding="utf-8")
-        # contents = f.read()
+        f = open("data.txt", "r", encoding="utf-8")
+        contents = f.read()
         MY_ADDRESS = "mail.expenseTracker@gmail.com"
         PASSWORD = "test123*"
         email = input("Please enter your email address!\n")
