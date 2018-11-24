@@ -6,6 +6,9 @@ Using HTTP post requests, retrives uses name and karma points
 Using PRAW, scrapes top 10 Reddit Submission based on users subReddit entry.
 Gets submissions along with top upvotes and number of comments. 
 Later on sorts top upvotes using python built in sort command.
+Using Binary Search Tree API displays sorted and unsorted tree of top upvotes.
+Then manual implementation of Binary Search Tree is performed on unsorted top upvotes, which
+results in a sorted Binary Search Tree
 At end, gives you a dashboard with Bar graph -> Submissions v. Top Score (sorted and unsorted) and 
 Scatter graph -> Submission v. Comments
 
@@ -97,4 +100,7 @@ Threading tiny beads. : 237
 ------------------------
 Man is found not guilty after spending 25 years in prison : 5233
 ------------------------
+![asas](https://user-images.githubusercontent.com/30497847/48972853-d9cfc400-eff8-11e8-8f71-52f5ab36bd73.PNG)
+![sdsd](https://user-images.githubusercontent.com/30497847/48972859-e2c09580-eff8-11e8-8ca4-73fef30d8fd2.PNG)
+
 Issues: with email!!
